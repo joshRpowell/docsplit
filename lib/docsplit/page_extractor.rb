@@ -17,7 +17,7 @@ module Docsplit
           "pdftailor unstitch --output #{ESCAPE[page_path]} #{ESCAPE[pdf]} 2>&1"
         else
           # Splits doc on page range as `pdfname_pagerange.pdf`.
-          "pdftk #{ESCAPE[pdf]} cat #{ESCAPE[pages]} output #{ESCAPE[pdf_name]}_p#{pages}.pdf"
+          "pdftk #{ESCAPE[pdf]} cat #{ESCAPE[pages]} output #{ESCAPE[page_path.gsub('%d', pages)]}"
         end
         result = `#{cmd}`.chomp
         FileUtils.rm('doc_data.txt') if File.exists?('doc_data.txt')
