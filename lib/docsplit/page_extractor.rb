@@ -10,12 +10,14 @@ module Docsplit
       [pdfs].flatten.each do |pdf|
         pdf_name = File.basename(pdf, File.extname(pdf))
         page_path = File.join(@output, "#{pdf_name}_%d.pdf")
+        pages = @pages || '1-' + Docsplit.extract_length(pdf).to_s
         FileUtils.mkdir_p @output unless File.exists?(@output)
         
         cmd = if DEPENDENCIES[:pdftailor] # prefer pdftailor, but keep pdftk for backwards compatability
           "pdftailor unstitch --output #{ESCAPE[page_path]} #{ESCAPE[pdf]} 2>&1"
         else
-          "pdftk #{ESCAPE[pdf]} burst output #{ESCAPE[page_path]} 2>&1"
+          # Splits doc on page range as `pdfname_pagerange.pdf`.
+          "pdftk #{ESCAPE[pdf]} cat #{ESCAPE[pages]} output #{ESCAPE[pdf_name]}_p#{pages}.pdf"
         end
         result = `#{cmd}`.chomp
         FileUtils.rm('doc_data.txt') if File.exists?('doc_data.txt')
@@ -27,8 +29,10 @@ module Docsplit
 
     private
 
+    # Extract the relevant GraphicsMagick options from the options hash.
     def extract_options(options)
       @output = options[:output] || '.'
+      @pages  = options[:pages]
     end
 
   end
