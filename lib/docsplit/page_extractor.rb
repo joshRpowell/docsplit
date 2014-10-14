@@ -10,7 +10,7 @@ module Docsplit
       [pdfs].flatten.each do |pdf|
         pdf_name = File.basename(pdf, File.extname(pdf))
         name = @name
-        page_path = File.join(@output, "#{pdf_name}_%d.pdf")
+        page_path = File.join(@output, "#{name}_%d.pdf")
         pages = @pages || '1-' + Docsplit.extract_length(pdf).to_s
         FileUtils.mkdir_p @output unless File.exists?(@output)
         
