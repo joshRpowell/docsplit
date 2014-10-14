@@ -9,6 +9,7 @@ module Docsplit
       extract_options opts
       [pdfs].flatten.each do |pdf|
         pdf_name = File.basename(pdf, File.extname(pdf))
+        name = @name
         page_path = File.join(@output, "#{pdf_name}_%d.pdf")
         pages = @pages || '1-' + Docsplit.extract_length(pdf).to_s
         FileUtils.mkdir_p @output unless File.exists?(@output)
@@ -33,6 +34,7 @@ module Docsplit
     def extract_options(options)
       @output = options[:output] || '.'
       @pages  = options[:pages]
+      @name   = options[:name]
     end
 
   end
